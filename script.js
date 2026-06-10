@@ -1,28 +1,29 @@
+
 let dados=[];
-fetch("dados.json")
-  .then(r=>r.json())
-  .then(j=>dados=j);
+fetch('dados.json')
+.then(r=>r.json())
+.then(j=>dados=j);
 
 function pesquisar(){
-  const p=document.getElementById("peso").value.trim();
-  const out=document.getElementById("resultado");
-  out.innerHTML="";
+ const peso=document.getElementById('peso').value.trim();
+ const resultado=document.getElementById('resultado');
 
-  const enc=dados.filter(x=>String(x["Peso"])===p);
+ const encontrados=dados.filter(item=>{
+   const valor=item['Peso'] ?? item['PESO'] ?? item['peso'];
+   return String(valor).trim()===peso;
+ });
 
-  if(enc.length===0){
-    out.innerHTML='<div class="card">Volume não encontrado.</div>';
-    return;
-  }
+ if(encontrados.length===0){
+   resultado.innerHTML='<div class="card"><b>Volume não encontrado.</b></div>';
+   return;
+ }
 
-  enc.forEach(i=>{
-    out.innerHTML += `
-      <div class="card">
-        <b>Fornecedor:</b> ${i["Fornecedor "] ?? i["Fornecedor"]}<br>
-        <b>Oferta:</b> ${i["Oferta"]}<br>
-        <b>Identificação:</b> ${i["Identificação"]}<br>
-        <b>Status:</b> ${i["Status"]}<br>
-        <b>ORGANIZAÇÃO:</b> ${i["ORGANIZAÇÃO"]}
-      </div>`;
-  });
+ resultado.innerHTML=encontrados.map(item=>`
+ <div class="card">
+ <b>Fornecedor:</b> ${item['Fornecedor'] ?? item['Fornecedor '] ?? ''}<br>
+ <b>Oferta:</b> ${item['Oferta'] ?? ''}<br>
+ <b>Identificação:</b> ${item['Identificação'] ?? ''}<br>
+ <b>Status:</b> ${item['Status'] ?? ''}<br>
+ <b>ORGANIZAÇÃO:</b> ${item['ORGANIZAÇÃO'] ?? ''}
+ </div>`).join('');
 }
